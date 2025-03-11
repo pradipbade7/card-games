@@ -1,0 +1,71 @@
+.confetti-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+  }
+  
+  .confetti-piece {
+    position: absolute;
+    will-change: transform;
+    /* Position all pieces to start from the center */
+    top: 50% !important; /* Override the inline styles */
+    left: 50% !important; /* Override the inline styles */
+    transform-origin: center;
+  }
+  
+  .confetti-piece.metallic {
+    background-blend-mode: overlay;
+  }
+  
+  /* Base burst animation */
+  @keyframes confetti-burst {
+    0% {
+      transform: translate(0, 0) scale(0.3) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    100% {
+      transform: translate(var(--final-x), var(--final-y)) scale(1) rotate(var(--final-rotation));
+      opacity: 0;
+    }
+  }
+  
+  /* Shine effect for metallic pieces */
+  @keyframes confetti-burst-shine {
+    0% {
+      transform: translate(0, 0) scale(0.3) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+      filter: brightness(1.5);
+    }
+    25% {
+      filter: brightness(1.2);
+    }
+    50% {
+      filter: brightness(1.5);
+    }
+    75% {
+      filter: brightness(1.0);
+    }
+    100% {
+      transform: translate(var(--final-x), var(--final-y)) scale(1) rotate(var(--final-rotation));
+      opacity: 0;
+    }
+  }
+  
+  /* For better performance on mobile */
+  @media (max-width: 648px) {
+    .confetti-container {
+      /* Reduce particles on mobile for better performance */
+      opacity: 0.8;
+    }
+  }

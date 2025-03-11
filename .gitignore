@@ -1,0 +1,57 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Production
+/build
+/dist
+
+# Misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Optional eslint cache
+.eslintcache
+
+# Debug logs
+debug.log
+
+# Local environment variables
+.env
+
+# Build files
+*.tsbuildinfo
+
+# Temporary files
+.tmp
+.temp
+
+# Large media files that should be stored elsewhere
+/public/assets/videos
+/public/assets/large-media
+
+# Backup files
+*.bak
+*~
+*.swp
