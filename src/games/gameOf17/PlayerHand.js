@@ -144,7 +144,7 @@ export default function PlayerHand({
                 </h3>
                 <div className="player-status">
                     <span>{getStatusText()}</span>
-                    {gamePhase === 'gameOver' && <span>Total: {showTotal ? total : '?'}</span>}
+                    {player.isHuman && <span>Total: {showTotal ? total : '?'}</span>}
                     
                 </div>
             </div>

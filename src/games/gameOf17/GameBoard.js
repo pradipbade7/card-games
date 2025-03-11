@@ -15,6 +15,10 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
         gameLog
     } = gameState;
 
+
+
+
+    
     const humanWon = winningPlayerId !== null && players[winningPlayerId]?.isHuman;
 
     // Add state for sound toggle
@@ -39,7 +43,6 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
         // Assign positions based on number of players
         switch (players.length) {
             case 2:
-                // 2 players: human at bottom, opponent at top
                 arrangedPlayers[humanPlayerIndex] = {
                     ...humanPlayer,
                     position: 'bottom'

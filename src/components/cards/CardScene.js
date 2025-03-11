@@ -5,7 +5,7 @@ import * as THREE from 'three';
 // Card mesh component for Three.js rendering
 function CardMesh({ suit, value, flipped, position, rotation, scale, cardBackStyle = 'cardback' }) {
     // Load textures
-    const frontTexture = useLoader(THREE.TextureLoader, `/assets/cards/faces/${suit}/${value}.svg`);
+    const frontTexture = useLoader(THREE.TextureLoader, `/assets/cards/faces2/${suit}/${value}.svg`);
     const backTexture = useLoader(THREE.TextureLoader, `/assets/cards/backs/${cardBackStyle}.png`);
     
     // Apply texture filters for better rendering
