@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PlayerHand from './PlayerHand';
 // import GameLog from './GameLog';
 import Confetti from '../../components/ui/Confetti';
@@ -12,13 +12,13 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
         currentPlayerIndex,
         phase,
         winner: winningPlayerId,
-        gameLog
+        // gameLog
     } = gameState;
 
 
 
 
-    
+
     const humanWon = winningPlayerId !== null && players[winningPlayerId]?.isHuman;
 
     // Add state for sound toggle
@@ -233,16 +233,18 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
                 {/* <GameLog messages={gameLog || []} /> */}
                 {phase === 'gameOver' && (
                     <div className="game-info">
-                       
-                        <h2 className='item-center'> 
-                            {players[winningPlayerId].isHuman? '🎉 You Win! 🎉'
-                                    : 'Game Over!'}
+                        <h2 className='item-center'>
+                            {winningPlayerId !== null && players[winningPlayerId] && players[winningPlayerId].isHuman
+                                ? '🎉 You Win! 🎉'
+                                : 'Game Over!'}
                         </h2>
-                        {winningPlayerId !== null && (
+
+                        {winningPlayerId !== null && players[winningPlayerId] && (
                             <p className="winner-announcement">
                                 {!players[winningPlayerId].isHuman && `${players[winningPlayerId].name} Wins!`}
                             </p>
                         )}
+
                         <div className="game-over-controls">
                             <button className="action-button" onClick={onReset}>Play Again</button>
                             <button className="action-button" onClick={onReturnHome}>Main Menu</button>
