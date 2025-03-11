@@ -57,16 +57,16 @@ react-3d-card-game/ ├── public/ # Static assets │ ├── assets/ │ 
    git clone https://github.com/pradipbade7/card-games.git
 
 2. Navigate to the project directory:
-
+   cd card-games
 
 3. Install dependencies:
-npm install
+   npm install
 
 4. Start the development server:
-npm start
+   npm start
 
 5. Open your browser and visit:
-http://localhost:3000
+   http://localhost:3000
 
 
 ## Gameplay Screenshots
