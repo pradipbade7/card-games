@@ -1,6 +1,5 @@
 import React, { Suspense, useRef, useEffect } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import * as THREE from 'three';
 // Fix the import path to use the local CardScene component
 import CardScene from '../../components/cards/CardScene';
 
@@ -32,7 +31,7 @@ export default function PlayerHand({
     position = 'bottom',
     cardBackStyle = 'cardback'
 }) {
-    const { name, cards, visibleCards, hiddenCards, total, status } = player;
+    const { name, visibleCards, hiddenCards, total, status } = player;
     const canvasRef = useRef();
     
     // Determine container class based on position

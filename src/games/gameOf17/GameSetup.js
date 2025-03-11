@@ -12,7 +12,7 @@ export default function GameSetup({ onSetupComplete }) {
       return savedCardBack || 'cardback'; // Default to 'cardback' if nothing is saved
     });
 
-  const [cardBacks, setCardBacks] = useState([
+  const [cardBacks] = useState([
     { id: 'cardback', name: 'Red' },
     { id: 'cardback_blue', name: 'Blue' },
     { id: 'cardback_green', name: 'Green' },

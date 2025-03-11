@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import * as THREE from 'three';
-import { setupInitialGame, handleDrawCard, handleHold, checkGameEnd } from './gameLogic';
+import { setupInitialGame, handleDrawCard, handleHold } from './gameLogic';
 import useBotAI from './useBotAI'; // Remove curly braces
 
 export default function useGameState() {

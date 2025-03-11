@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PlayerHand from './PlayerHand';
-import GameLog from './GameLog';
+// import GameLog from './GameLog';
 import Confetti from '../../components/ui/Confetti';
 
 import { isSoundEnabled, toggleSound } from '../../services/audioService';
@@ -230,12 +230,14 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
                 {/* <GameLog messages={gameLog || []} /> */}
                 {phase === 'gameOver' && (
                     <div className="game-info">
-                        <h2 className='item-center'>Game Over!</h2>
+                       
+                        <h2 className='item-center'> 
+                            {players[winningPlayerId].isHuman? '🎉 You Win! 🎉'
+                                    : 'Game Over!'}
+                        </h2>
                         {winningPlayerId !== null && (
                             <p className="winner-announcement">
-                                {players[winningPlayerId].isHuman
-                                    ? '🎉 You Win! 🎉'
-                                    : `${players[winningPlayerId].name} Wins!`}
+                                {!players[winningPlayerId].isHuman && `${players[winningPlayerId].name} Wins!`}
                             </p>
                         )}
                         <div className="game-over-controls">

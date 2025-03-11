@@ -16,7 +16,7 @@ export default function useBotAI(gameState, setGameState) {
 
         // Count number of other players still in the game
         const activeOtherPlayers = otherPlayers.filter(p => p.status !== 'eliminated').length;
-        if (activeOtherPlayers == 0) return false;  // No other players and have more than 10, don't draw
+        if (activeOtherPlayers === 0) return false;  // No other players and have more than 10, don't draw
 
         // Default probability based on bot's current total
         let drawProbability;
