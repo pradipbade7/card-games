@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { cardUtils } from '../../services/cardUtils'; // Update path
 import { handleDrawCard, handleHold } from './gameLogic';
 export default function useBotAI(gameState, setGameState) {
-    // Game of 17 specific bot decision-making logic
     const shouldBotDraw = (botCards, otherPlayers) => {
         // If bot has only 1 card, must draw (game rule requires at least 2 cards)
         if (botCards.length < 2) return true;
@@ -31,7 +30,6 @@ export default function useBotAI(gameState, setGameState) {
                 ? cardUtils.calculateTotal(playerData.visibleCards.slice(1))
                 : cardUtils.calculateTotal(playerData.visibleCards);
 
-            // Consider a player ahead if their visible cards suggest they're close to 17
             // (remember we can't see their hidden card)
             return visibleTotal >= botTotal;
         });
@@ -64,19 +62,14 @@ export default function useBotAI(gameState, setGameState) {
                 drawProbability = 0;
         }
 
-
-
         // Adjust strategy based on number of opponents
         if (activeOtherPlayers <= 1) {
             // More conservative with fewer opponents
             drawProbability *= 0.8;
         }
-
-
-
         // Ensure probability is within bounds
         drawProbability = Math.max(0, Math.min(1, drawProbability));
-        console.log(`Bot decision (Total: ${botTotal}): Draw probability ${drawProbability.toFixed(2)}, Active: ${activeOtherPlayers}, Holding: ${holdingPlayersCount}, Will draw: ${Math.random() < drawProbability}`);
+        // console.log(`Bot decision (Total: ${botTotal}): Draw probability ${drawProbability.toFixed(2)}, Active: ${activeOtherPlayers}, Holding: ${holdingPlayersCount}, Will draw: ${Math.random() < drawProbability}`);
         return Math.random() < drawProbability;
     };
 

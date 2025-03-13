@@ -5,7 +5,7 @@ const audioFiles = {
     hold: "../../assets/sounds/game_hold.mp3",
     bust: "../../assets/sounds/bust.mp3",
     win: "../../assets/sounds/game_win.mp3",
-    gameOver: "../../assets/sounds/game_lose.wav",
+    gameOver: "../../assets/sounds/game_lose.mp3",
     gameStart: "../../assets/sounds/game_start.mp3"
 };
 

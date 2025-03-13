@@ -59,7 +59,7 @@ export default function useGameState() {
         
         setTimeout(() => {
             setupGame(numPlayers);
-        }, 50);
+        }, 500);
     };
 
     // Return to home screen
@@ -83,7 +83,7 @@ export default function useGameState() {
 
         const botTurn = setTimeout(() => {
             processBotTurn();
-        }, 1000);
+        }, 1500);
 
         return () => clearTimeout(botTurn);
     }, [gameState, processBotTurn]);
@@ -106,7 +106,7 @@ export default function useGameState() {
                     winner: gameState.pendingWinner,
                     gameLog: [...gameState.gameLog, gameState.pendingWinnerMessage],
                 });
-            }, 500);
+            }, 1000);
 
             return () => clearTimeout(revealTimer);
         }
