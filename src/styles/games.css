@@ -434,12 +434,11 @@ body {
 }
 
 .selector-button {
-  width: 40px;
-  height: 40px;
   font-size: 20px;
   background-color: #e0a800;
-  color: #000;
-  border: none;
+  padding: 5px 10px;
+  /* color: #000; */
+  /* border: none; */
   cursor: pointer;
 }
 .selector-button:hover {
@@ -688,7 +687,7 @@ body {
 }
 
 .control-button {
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(255, 255, 255, 0.8);
   border: none;
   border-radius: 50%;
   width: 30px;
@@ -718,7 +717,7 @@ body {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  color: #000;
+  color: #fff;
   border: none;
   cursor: pointer;
   display: flex;
@@ -776,6 +775,7 @@ body {
   backface-visibility: hidden;
   border-radius: 8px;
 }
+
 
 .card-front-face {
   transform: rotateY(180deg);

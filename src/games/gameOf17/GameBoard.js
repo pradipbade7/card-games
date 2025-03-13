@@ -3,8 +3,8 @@ import PlayerHand from './PlayerHand';
 // import GameLog from './GameLog';
 import Confetti from '../../components/ui/Confetti';
 import audioService from '../../services/audioService'; // Import audio service
-import { GiSpeaker,GiSpeakerOff } from "react-icons/gi";
-import { GoHome } from "react-icons/go";
+
+
 
 // Add at the top of your file, outside the component
 let soundsInitialized = false;
@@ -33,16 +33,16 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
     const soundPlayed = useRef(false);
     useEffect(() => {
         // Skip if already initialized globally
-    if (soundsInitialized) {
-        setSoundsLoading(false);
-        
-        // Make sure game start sound plays even when skipping initialization
-        if (soundOn && gameState.phase === 'playing' && !soundPlayed.current) {
-            audioService.play('gameStart');
-            soundPlayed.current = true;
+        if (soundsInitialized) {
+            setSoundsLoading(false);
+
+            // Make sure game start sound plays even when skipping initialization
+            if (soundOn && gameState.phase === 'playing' && !soundPlayed.current) {
+                audioService.play('gameStart');
+                soundPlayed.current = true;
+            }
+            return;
         }
-        return;
-    }
 
         // Skip if already initialized in this component instance
         if (initRef.current) return;
@@ -181,7 +181,7 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
                     }
                 }
             }
-             else if (players.length === 4) {
+            else if (players.length === 4) {
                 // 3-4 players
                 const positions = ['left', 'top', 'right'];
                 let posIdx = 0;
@@ -288,14 +288,12 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
                         onClick={handleToggleSound}
                         title={soundOn ? "Mute Sound" : "Enable Sound"}
                     >
-                        {soundOn ?
-                            // Simple volume-up icon with standard viewBox
-                            <GiSpeaker/>
-                            :
-                            // Simple volume-off icon with standard viewBox
-                            <GiSpeakerOff />
-
-                        }
+                        <img
+                            src={soundOn ? "/assets/icons/speaker_on.png" : "/assets/icons/speaker_off.png"}
+                            alt={soundOn ? "Sound On" : "Sound Off"}
+                            width="24"
+                            height="24"
+                        />
                     </button>
 
                     {/* Home button - returns to main menu */}
@@ -304,8 +302,13 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
                         onClick={onReturnHome}
                         title="Return to Main Menu"
                     >
-                        <GoHome />
 
+                        <img
+                            src="/assets/icons/home.png"
+                            alt="Home"
+                            width="24"
+                            height="24"
+                        />
                     </button>
                 </div>
             </div>
