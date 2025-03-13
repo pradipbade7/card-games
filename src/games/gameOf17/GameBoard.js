@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PlayerHand from './PlayerHand';
 // import GameLog from './GameLog';
 import Confetti from '../../components/ui/Confetti';
 import audioService from '../../services/audioService'; // Import audio service
+import { GiSpeaker,GiSpeakerOff } from "react-icons/gi";
+import { GoHome } from "react-icons/go";
+
+// Add at the top of your file, outside the component
+let soundsInitialized = false;
 
 export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onReturnHome }) {
     const {
@@ -13,153 +18,160 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
         // gameLog
     } = gameState;
 
-
-
-
-
     const humanWon = winningPlayerId !== null && players[winningPlayerId]?.isHuman;
+    const humanPlayerIndex = players.findIndex(player => player.isHuman);
+    const humanPlayer = players[humanPlayerIndex];
     const [showControls, setShowControls] = useState(false);
+    const [soundsLoading, setSoundsLoading] = useState(true);
 
     // Add sound state to your component
     const [soundOn, setSoundOn] = useState(() => {
-        // Try to load the user's preference from localStorage
         const savedPreference = localStorage.getItem('soundEnabled');
-        // Default to true if no saved preference
         return savedPreference !== null ? savedPreference === 'true' : true;
     });
-
-    // Initialize audio
+    const initRef = useRef(false);
     useEffect(() => {
-        const initAudio = () => {
-            audioService.initialize().then(() => {
-                // Set initial state based on audio service
+        // Skip if already initialized globally
+        if (soundsInitialized) {
+            setSoundsLoading(false);
+            return;
+        }
+
+        // Skip if already initialized in this component instance
+        if (initRef.current) return;
+
+        // Mark as initialized for this component instance
+        initRef.current = true;
+
+        let isMounted = true; // Flag to prevent state updates after unmount
+
+        // Initialize and preload all sounds when the component mounts
+        const initAudio = async () => {
+            if (!isMounted) return; // Safety check
+
+            try {
+                await audioService.initialize();
+                if (!isMounted) return;
+
                 audioService.setEnabled(soundOn);
-            });
-            document.removeEventListener('click', initAudio);
-            document.removeEventListener('touchstart', initAudio);
+                console.log('Audio initialized successfully');
+
+                // Add timeout to ensure we don't get stuck
+                const timeoutPromise = new Promise(resolve => setTimeout(() => {
+                    console.log('Audio loading timed out - continuing anyway');
+                    resolve();
+                }, 5000)); // 5 second timeout
+
+                // Race between normal loading and timeout
+                await Promise.race([
+                    audioService.preloadAllSounds(),
+                    timeoutPromise
+                ]);
+
+                if (!isMounted) return;
+                console.log('Audio loading complete');
+
+                // Mark sounds as initialized globally
+                soundsInitialized = true;
+
+                // All sounds are loaded, game can start
+                setSoundsLoading(false);
+
+                // Play game start sound if enabled
+                if (soundOn && gameState.phase === 'playing') {
+                    audioService.play('gameStart');
+                }
+            } catch (error) {
+                console.error('Error initializing audio:', error);
+                if (!isMounted) return;
+
+                // Even if there's an error, allow the game to start
+                setSoundsLoading(false);
+            }
         };
 
-        document.addEventListener('click', initAudio);
-        document.addEventListener('touchstart', initAudio);
+        // Start audio initialization
+        initAudio();
+
+        // Set up event listeners for mobile browsers
+        const handleInteraction = () => {
+            audioService.resumeAudioContext();
+        };
+
+        document.addEventListener('click', handleInteraction, { once: true });
+        document.addEventListener('touchstart', handleInteraction, { once: true });
 
         return () => {
-            document.removeEventListener('click', initAudio);
-            document.removeEventListener('touchstart', initAudio);
+            isMounted = false;
+            document.removeEventListener('click', handleInteraction);
+            document.removeEventListener('touchstart', handleInteraction);
         };
-    }, [soundOn]);
+    }, []);
 
-    // Function to toggle sound
+    // Add a safety timeout to exit loading screen regardless
+    useEffect(() => {
+        if (!soundsLoading) return;
+
+        const safetyTimeout = setTimeout(() => {
+            console.log("Safety timeout triggered - forcing game to start");
+            setSoundsLoading(false);
+            soundsInitialized = true; // Mark as initialized anyway
+        }, 8000);
+
+        return () => clearTimeout(safetyTimeout);
+    }, [soundsLoading]);
+
+    // Function to handle sound toggle
     const handleToggleSound = () => {
         const newSoundState = !soundOn;
         audioService.setEnabled(newSoundState);
         setSoundOn(newSoundState);
-
-        // Save preference to localStorage
         localStorage.setItem('soundEnabled', newSoundState.toString());
 
-        // Play a test sound if turning on
         if (newSoundState) {
-            audioService.play('turnChange');
+            audioService.play('gameStart');
         }
     };
-    // Find the human player
-    const humanPlayerIndex = players.findIndex(player => player.isHuman);
-    const humanPlayer = players[humanPlayerIndex];
 
-    // Arrange players around the table
+    // Function to arrange players for display based on human player position
     const arrangePlayersForDisplay = () => {
-        if (players.length <= 1) return players;
-
-        // Clone players for manipulation
         const arrangedPlayers = [...players];
 
-        // Assign positions based on number of players
-        switch (players.length) {
-            case 2:
-                arrangedPlayers[humanPlayerIndex] = {
-                    ...humanPlayer,
-                    position: 'bottom'
-                };
+        if (humanPlayerIndex !== -1) {
+            // Set human player at bottom position
+            arrangedPlayers[humanPlayerIndex] = {
+                ...players[humanPlayerIndex],
+                position: 'bottom'
+            };
 
-                // Find the other player
-                const otherPlayerIdx = humanPlayerIndex === 0 ? 1 : 0;
-                arrangedPlayers[otherPlayerIdx] = {
-                    ...players[otherPlayerIdx],
-                    position: 'top'
-                };
-                break;
-
-            case 3:
-                // 3 players: human at bottom, others at top-left and top-right
-                arrangedPlayers[humanPlayerIndex] = {
-                    ...humanPlayer,
-                    position: 'bottom'
-                };
-
-                // Position the other players
-                let position3p = 0;
+            // Arrange other players around the table
+            if (players.length <= 2) {
+                // Two players - human at bottom, other at top
                 for (let i = 0; i < players.length; i++) {
                     if (i !== humanPlayerIndex) {
                         arrangedPlayers[i] = {
                             ...players[i],
-                            position: position3p === 0 ? 'top-left' : 'top-right'
+                            position: 'top'
                         };
-                        position3p++;
                     }
                 }
-                break;
-
-            case 4:
-                // 4 players: human at bottom, opponents at top, left, and right
-                arrangedPlayers[humanPlayerIndex] = {
-                    ...humanPlayer,
-                    position: 'bottom'
-                };
-
-                // Positions for 4 players (excluding human)
-                const positions4p = ['left', 'top', 'right'];
+            } else if (players.length <= 4) {
+                // 3-4 players
+                const positions = ['left', 'top', 'right'];
                 let posIdx = 0;
 
                 for (let i = 0; i < players.length; i++) {
                     if (i !== humanPlayerIndex) {
-                        arrangedPlayers[i] = {
-                            ...players[i],
-                            position: positions4p[posIdx]
-                        };
-                        posIdx++;
+                        if (posIdx < positions.length) {
+                            arrangedPlayers[i] = {
+                                ...players[i],
+                                position: positions[posIdx]
+                            };
+                            posIdx++;
+                        }
                     }
                 }
-                break;
-
-            case 5:
-                // 4 players: human at bottom, opponents at top, left, and right
-                arrangedPlayers[humanPlayerIndex] = {
-                    ...humanPlayer,
-                    position: 'bottom'
-                };
-
-                // Positions for 4 players (excluding human)
-                const positions5p = ['bottom-left', 'top-left', 'top-right', 'bottom-right'];
-                let posIdx4 = 0;
-
-                for (let i = 0; i < players.length; i++) {
-                    if (i !== humanPlayerIndex) {
-                        arrangedPlayers[i] = {
-                            ...players[i],
-                            position: positions5p[posIdx4]
-                        };
-                        posIdx4++;
-                    }
-                }
-                break;
-
-            default:
-                // 5+ players: distribute around the table
-                arrangedPlayers[humanPlayerIndex] = {
-                    ...humanPlayer,
-                    position: 'bottom'
-                };
-
+            } else {
                 // More positions for additional players
                 const positionsMany = ['bottom-left', 'top-left', 'top', 'top-right', 'bottom-right'];
                 let posIdxMany = 0;
@@ -182,36 +194,29 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
                         }
                     }
                 }
+            }
         }
 
         return arrangedPlayers;
     };
-    // // Dynamically arrange players in a circular layout
-    // const arrangePlayersForDisplay = () => {
-    //     if (players.length <= 1) return players;
 
-    //     const arrangedPlayers = [...players];
-    //     const totalPlayers = players.length;
-    //     const radius = 200; // Adjust as needed
-    //     const centerX = window.innerWidth / 2;
-    //     const centerY = window.innerHeight / 2;
-
-    //     arrangedPlayers.forEach((player, i) => {
-    //         if (i === humanPlayerIndex) {
-    //             arrangedPlayers[i] = { ...player, x: centerX, y: centerY + radius, position: 'bottom' };
-    //         } else {
-    //             const angle = ((i - (i > humanPlayerIndex ? 1 : 0)) * (360 / (totalPlayers - 1))) * (Math.PI / 180);
-    //             arrangedPlayers[i] = {
-    //                 ...player,
-    //                 x: centerX + radius * Math.cos(angle),
-    //                 y: centerY + radius * Math.sin(angle),
-    //                 position: 'auto'
-    //             };
-    //         }
-    //     });
-    //     return arrangedPlayers;
-    // };
     const arrangedPlayers = arrangePlayersForDisplay();
+
+    // Show loading screen while sounds are loading
+    if (soundsLoading) {
+        return (
+            <div className="loading-screen">
+                <div className="loading-spinner"></div>
+                <p>Loading game sounds...</p>
+                <button
+                    className="skip-loading-btn"
+                    onClick={() => setSoundsLoading(false)}
+                >
+                    Skip Loading
+                </button>
+            </div>
+        );
+    }
 
     return (
         <div className="game-board">
@@ -241,14 +246,11 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
                     >
                         {soundOn ?
                             // Simple volume-up icon with standard viewBox
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24" fill="#e3e3e3">
-                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
-                            </svg>
+                            <GiSpeaker/>
                             :
                             // Simple volume-off icon with standard viewBox
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24" fill="#e3e3e3">
-                                <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
-                            </svg>
+                            <GiSpeakerOff />
+
                         }
                     </button>
 
@@ -258,9 +260,8 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
                         onClick={onReturnHome}
                         title="Return to Main Menu"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24" fill="#e3e3e3">
-                            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-                        </svg>
+                        <GoHome />
+
                     </button>
                 </div>
             </div>

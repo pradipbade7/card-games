@@ -609,8 +609,8 @@ body {
 /* Sound toggle button */
 .sound-toggle {
 
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background-color: rgb(8 173 54);
   color: white;
@@ -620,7 +620,7 @@ body {
   justify-content: center;
   align-items: center;
   font-size: 20px;
-  z-index: 10;
+  z-index: 20;
   transition: background-color 0.2s ease;
 }
 
@@ -714,6 +714,22 @@ body {
 .sound-toggle.sound-off {
   box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
 }
+
+.home-button{
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  z-index: 20;
+  transition: background-color 0.2s ease;
+}
+
 .cards-2d-container {
   position: relative;
   height: 23vh;
@@ -742,11 +758,11 @@ body {
 }
 
 .card-2d.flipping {
-  animation: cardFlip 0.8s ease-in-out forwards;
+  animation: cardFlip 1s ease-in-out forwards;
 }
 /* Animation for new cards */
 .card-2d.new-card {
-  animation: newCardEntrance 0.5s ease-out forwards;
+  animation: newCardEntrance 0.3s ease-out forwards;
 }
 
 .card-face {
@@ -800,6 +816,51 @@ body {
   color: white;
   background-color: rgba(0,0,0,0.3);
   border-radius: 5px;
+}
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+.skip-loading-btn {
+  margin-top: 20px;
+  padding: 8px 16px;
+  background-color: #444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.skip-loading-btn:hover {
+  background-color: #666;
+}
+
+@keyframes spin {
+  to {
+      transform: rotate(360deg);
+  }
 }
 /* Responsive adjustments */
 @media (max-width: 1024px) {
