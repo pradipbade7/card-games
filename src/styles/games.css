@@ -393,7 +393,6 @@ body {
 /* Game Setup styles */
 .game-setup {
   margin: 0 auto;
-  padding: 20px;
   background-color: rgba(0, 0, 0, 0.7);
   color: white;
   border-radius: 10px;
@@ -860,6 +859,27 @@ body {
   to {
       transform: rotate(360deg);
   }
+}
+.footer {
+  text-align: center;
+  padding: 5px 10px;
+  background-color: #ffcc00a8;
+  width: 100%;
+  margin-top: 10px;
+  font-weight: bold;
+
+}
+
+.footer p {
+  margin: 0;
+  color: #000;
+  font-size: 11px;
+}
+.footer a {
+ 
+  font-size: 14px;
+  color: #01601e;
+  text-decoration: none;
 }
 /* Responsive adjustments */
 @media (max-width: 1024px) {

@@ -135,6 +135,9 @@ export default function GameSetup({ onSetupComplete }) {
         <p>- Closest to 17 without exceeding wins</p>
         <p>- Exactly 17 is an instant win</p>
       </div>
+      <footer className="footer">
+        <p>&copy; Designed and created by <a href="https://pradipbade.com" target="_blank" rel="noopener noreferrer">Pradip Bade</a></p>
+      </footer>
     </div>
   );
 }
