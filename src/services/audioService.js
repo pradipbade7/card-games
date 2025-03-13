@@ -10,8 +10,8 @@ class AudioService {
 
         // Fix paths for better asset loading - use absolute paths
         this.audioFiles = {
-            cardDraw: "/assets/sounds/card_deal.ogg",
-            cardDeal: "/assets/sounds/card_deal.ogg",
+            cardDraw: "/assets/sounds/card_deal.mp3",
+            cardDeal: "/assets/sounds/card_deal.mp3",
             hold: "/assets/sounds/game_hold.mp3", 
             win: "/assets/sounds/game_win.mp3",
             gameOver: "/assets/sounds/game_lose.mp3",
