@@ -30,12 +30,19 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
         return savedPreference !== null ? savedPreference === 'true' : true;
     });
     const initRef = useRef(false);
+    const soundPlayed = useRef(false);
     useEffect(() => {
         // Skip if already initialized globally
-        if (soundsInitialized) {
-            setSoundsLoading(false);
-            return;
+    if (soundsInitialized) {
+        setSoundsLoading(false);
+        
+        // Make sure game start sound plays even when skipping initialization
+        if (soundOn && gameState.phase === 'playing' && !soundPlayed.current) {
+            audioService.play('gameStart');
+            soundPlayed.current = true;
         }
+        return;
+    }
 
         // Skip if already initialized in this component instance
         if (initRef.current) return;
@@ -80,6 +87,7 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
                 // Play game start sound if enabled
                 if (soundOn && gameState.phase === 'playing') {
                     audioService.play('gameStart');
+                    soundPlayed.current = true;
                 }
             } catch (error) {
                 console.error('Error initializing audio:', error);
@@ -106,7 +114,7 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
             document.removeEventListener('click', handleInteraction);
             document.removeEventListener('touchstart', handleInteraction);
         };
-    }, []);
+    }, [gameState.phase, soundOn]);
 
     // Add a safety timeout to exit loading screen regardless
     useEffect(() => {
@@ -145,7 +153,7 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
             };
 
             // Arrange other players around the table
-            if (players.length <= 2) {
+            if (players.length === 2) {
                 // Two players - human at bottom, other at top
                 for (let i = 0; i < players.length; i++) {
                     if (i !== humanPlayerIndex) {
@@ -155,7 +163,25 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
                         };
                     }
                 }
-            } else if (players.length <= 4) {
+            }
+            else if (players.length === 3) {
+                // 3-4 players
+                const positions = ['top-left', 'top-right'];
+                let posIdx = 0;
+
+                for (let i = 0; i < players.length; i++) {
+                    if (i !== humanPlayerIndex) {
+                        if (posIdx < positions.length) {
+                            arrangedPlayers[i] = {
+                                ...players[i],
+                                position: positions[posIdx]
+                            };
+                            posIdx++;
+                        }
+                    }
+                }
+            }
+             else if (players.length === 4) {
                 // 3-4 players
                 const positions = ['left', 'top', 'right'];
                 let posIdx = 0;
@@ -171,7 +197,25 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
                         }
                     }
                 }
-            } else {
+            }
+            else if (players.length === 5) {
+                // 3-4 players
+                const positions = ['left', 'top-left', 'top-right', 'right'];
+                let posIdx = 0;
+
+                for (let i = 0; i < players.length; i++) {
+                    if (i !== humanPlayerIndex) {
+                        if (posIdx < positions.length) {
+                            arrangedPlayers[i] = {
+                                ...players[i],
+                                position: positions[posIdx]
+                            };
+                            posIdx++;
+                        }
+                    }
+                }
+            }
+            else {
                 // More positions for additional players
                 const positionsMany = ['bottom-left', 'top-left', 'top', 'top-right', 'bottom-right'];
                 let posIdxMany = 0;

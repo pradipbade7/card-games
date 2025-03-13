@@ -437,15 +437,14 @@ body {
   width: 40px;
   height: 40px;
   font-size: 20px;
-  border-radius: 50%;
   background-color: #e0a800;
   color: #000;
   border: none;
   cursor: pointer;
-  text-align: center;
-  justify-self: center;
 }
-
+.selector-button:hover {
+  box-shadow: 0 0 10px rgb(247, 231, 182);
+}
 .selector-button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
@@ -719,7 +718,7 @@ body {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  color: white;
+  color: #000;
   border: none;
   cursor: pointer;
   display: flex;

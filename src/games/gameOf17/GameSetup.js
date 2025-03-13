@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FaPlus, FaMinus } from "react-icons/fa";
 
 export default function GameSetup({ onSetupComplete }) {
   const [numPlayers, setNumPlayers] = useState(4); // Default: 1 human + 3 bots
@@ -77,7 +78,7 @@ export default function GameSetup({ onSetupComplete }) {
             disabled={numPlayers <= 2}
             onClick={() => setNumPlayers(num => Math.max(2, num - 1))}
           >
-            -
+            <FaMinus />
           </button>
           <span>{numPlayers} Players</span>
           <button 
@@ -85,7 +86,8 @@ export default function GameSetup({ onSetupComplete }) {
             disabled={numPlayers >= maxPlayers}
             onClick={() => setNumPlayers(num => Math.min(maxPlayers, num + 1))}
           >
-            +
+            <FaPlus />
+
           </button>
         </div>
         {window.innerWidth < 1024 && (
