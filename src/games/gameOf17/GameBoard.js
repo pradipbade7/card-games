@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PlayerHand from './PlayerHand';
 // import GameLog from './GameLog';
 import Confetti from '../../components/ui/Confetti';
-
-import { isSoundEnabled, toggleSound } from '../../services/audioService';
-
+import audioService from '../../services/audioService'; // Import audio service
 
 export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onReturnHome }) {
     const {
@@ -21,13 +19,48 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
 
     const humanWon = winningPlayerId !== null && players[winningPlayerId]?.isHuman;
     const [showControls, setShowControls] = useState(false);
-    // Add state for sound toggle
-    const [soundOn, setSoundOn] = useState(isSoundEnabled());
 
-    // Handle sound toggle
+    // Add sound state to your component
+    const [soundOn, setSoundOn] = useState(() => {
+        // Try to load the user's preference from localStorage
+        const savedPreference = localStorage.getItem('soundEnabled');
+        // Default to true if no saved preference
+        return savedPreference !== null ? savedPreference === 'true' : true;
+    });
+
+    // Initialize audio
+    useEffect(() => {
+        const initAudio = () => {
+            audioService.initialize().then(() => {
+                // Set initial state based on audio service
+                audioService.setEnabled(soundOn);
+            });
+            document.removeEventListener('click', initAudio);
+            document.removeEventListener('touchstart', initAudio);
+        };
+
+        document.addEventListener('click', initAudio);
+        document.addEventListener('touchstart', initAudio);
+
+        return () => {
+            document.removeEventListener('click', initAudio);
+            document.removeEventListener('touchstart', initAudio);
+        };
+    }, [soundOn]);
+
+    // Function to toggle sound
     const handleToggleSound = () => {
-        const newState = toggleSound();
-        setSoundOn(newState);
+        const newSoundState = !soundOn;
+        audioService.setEnabled(newSoundState);
+        setSoundOn(newSoundState);
+
+        // Save preference to localStorage
+        localStorage.setItem('soundEnabled', newSoundState.toString());
+
+        // Play a test sound if turning on
+        if (newSoundState) {
+            audioService.play('turnChange');
+        }
     };
     // Find the human player
     const humanPlayerIndex = players.findIndex(player => player.isHuman);
@@ -207,12 +240,14 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
                         title={soundOn ? "Mute Sound" : "Enable Sound"}
                     >
                         {soundOn ?
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
-                                <path d="M560-131v-82q90-26 145-100t55-168q0-94-55-168T560-749v-82q124 28 202 125.5T840-481q0 127-78 224.5T560-131ZM120-360v-240h160l200-200v640L280-360H120Zm440 40v-322q47 22 73.5 66t26.5 96q0 51-26.5 94.5T560-320ZM400-606l-86 86H200v80h114l86 86v-252ZM300-480Z" />
+                            // Simple volume-up icon with standard viewBox
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24" fill="#e3e3e3">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
                             </svg>
                             :
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3">
-                                <path d="M792-56 671-177q-25 16-53 27.5T560-131v-82q14-5 27.5-10t25.5-12L480-368v208L280-360H120v-240h128L56-792l56-56 736 736-56 56Zm-8-232-58-58q17-31 25.5-65t8.5-70q0-94-55-168T560-749v-82q124 28 202 125.5T840-481q0 53-14.5 102T784-288ZM650-422l-90-90v-130q47 22 73.5 66t26.5 96q0 15-2.5 29.5T650-422ZM480-592 376-696l104-104v208Zm-80 238v-94l-72-72H200v80h114l86 86Zm-36-130Z" />
+                            // Simple volume-off icon with standard viewBox
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24" fill="#e3e3e3">
+                                <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
                             </svg>
                         }
                     </button>
@@ -223,8 +258,7 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
                         onClick={onReturnHome}
                         title="Return to Main Menu"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#e3e3e3">
-                            <path d="M0 0h24v24H0z" fill="none" />
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24" fill="#e3e3e3">
                             <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
                         </svg>
                     </button>

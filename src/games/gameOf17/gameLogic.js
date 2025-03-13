@@ -1,5 +1,5 @@
 import { cardUtils } from '../../services/cardUtils'; // Update path
-import { playSoundEffect } from '../../services/audioService'; // Import audio service
+import  audioService  from '../../services/audioService'; // Import audio service
 
 // Initialize game with specified number of players
 export function setupInitialGame(numPlayers, cardBackStyle = 'cardback') {
@@ -11,7 +11,7 @@ export function setupInitialGame(numPlayers, cardBackStyle = 'cardback') {
     const firstPlayerIndex = Math.floor(Math.random() * numPlayers);
 
     // // Play game start sound
-    playSoundEffect('gameStart');
+    audioService.play('gameStart');
 
     const botNames = [
         "Alex", "Morgan", "Jordan", "Taylor", "Casey"
@@ -70,7 +70,7 @@ export function handleDrawCard(gameState, currentPlayer, playerIndex) {
     const drawnCard = drawn[0];
 
     // Play card draw sound
-    playSoundEffect('cardDraw');
+    audioService.play('cardDraw');
 
     // Update player's cards and total
     const updatedPlayers = [...gameState.players];
@@ -88,10 +88,10 @@ export function handleDrawCard(gameState, currentPlayer, playerIndex) {
 
         player.status = 'winner';
         if (player.isHuman) {
-            playSoundEffect('win');
+            audioService.play('win');
         } else {
             // Play game over sound
-            playSoundEffect('gameOver');
+            audioService.play('gameOver');
         }
 
 
@@ -174,7 +174,7 @@ export function handleHold(gameState, currentPlayer, playerIndex) {
     }
 
     // Play hold sound
-    playSoundEffect('hold');
+    audioService.play('hold');
 
     const updatedPlayers = [...gameState.players];
     updatedPlayers[playerIndex].status = 'holding';
@@ -280,10 +280,10 @@ export function determineWinner(players) {
 
     if (winnerIndex !== -1) {
         if (players[winnerIndex].isHuman) {
-            playSoundEffect('win');
+            audioService.play('win');
         } else {
             // Play game over sound
-            playSoundEffect('gameOver');
+            audioService.play('gameOver');
         }
         return {
             winnerIndex,
