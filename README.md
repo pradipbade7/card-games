@@ -9,8 +9,7 @@ A React-based card game where players draw cards aiming to get closest to 17 wit
 ## Features
 
 - **Interactive Card Game**: Draw cards and compete against 2-6 AI opponents
-- **3D Card Effects**: Beautiful card animations and interactions
-- **Responsive Design**: Play on desktop or mobile devices
+- **Responsive Design**: Play on desktop or mobile devices, but better experience in PC
 - **Sound Effects**: Immersive audio feedback for game actions
 - **Multiple Card Back Styles**: Choose from 6 different card back designs
 - **Persistent Settings**: Game remembers your preferences
@@ -32,14 +31,9 @@ A React-based card game where players draw cards aiming to get closest to 17 wit
 - All players start with one card
 - Must draw until reaching at least 11 points
 - Can hold at any point after reaching 11
-- Face cards (J, Q, K) are worth 10 points
-- Ace is worth 1 point
+- Ace=1, Jack=11, Queen=12, King=13
 - If you exceed 17, you're eliminated
 - Getting exactly 17 is an instant win
-
-## Project Structure
-react-3d-card-game/ ├── public/ # Static assets │ ├── assets/ │ │ ├── cards/ # Card images │ │ │ ├── backs/ # Card back designs │ │ │ └── faces/ # Card face images by suit │ │ ├── sounds/ # Sound effects │ │ └── images/ # Other game images │ ├── index.html # Main HTML entry │ └── favicon.ico # Website icon │ ├── src/ # Source code │ ├── components/ # Reusable UI components │ │ └── ui/ │ │ ├── Confetti.js # Win celebration effect │ │ └── ... │ │ │ ├── games/ # Game implementations │ │ └── gameOf17/ # 17 or Nothing card game │ │ ├── GameBoard.js # Main game board component │ │ ├── PlayerHand.js # Player's cards display │ │ ├── GameSetup.js # Game configuration screen │ │ ├── GameLog.js # Game action history │ │ ├── useBotAI.js # AI logic for computer players │ │ ├── gameLogic.js # Core game rules and state management │ │ └── ... │ │ │ ├── services/ # Utility services │ │ ├── audioService.js # Sound management │ │ ├── cardUtils.js # Card manipulation utilities │ │ └── ... │ │ │ ├── styles/ # CSS styles │ │ ├── games.css # Game-specific styles │ │ ├── confetti.css # Animation styles │ │ └── ... │ │ │ ├── App.js # Main application component │ ├── Home.js # Home/landing page │ └── index.js # Application entry point │ ├── package.json # Project dependencies and scripts ├── .gitignore # Git ignore configuration └── README.md # Project documentation
-
 
 ## Technologies Used
 
@@ -71,13 +65,16 @@ react-3d-card-game/ ├── public/ # Static assets │ ├── assets/ │ 
 
 ## Gameplay Screenshots
 
-![Game Setup](screenshots/game-setup.png)
+![Game Setup](public/screenshots/game-setup.png)
 *Player selects the number of opponents and card back design*
 
-![Gameplay](screenshots/gameplay.png)
+![Gameplay](public/screenshots/gameplay.png)
 *In-game screen with cards and player controls*
 
-![Victory Screen](screenshots/victory.png)
+![Lose Screen](public/screenshots/lose.png)
+*Screen when bot wins*
+
+![Victory Screen](public/screenshots/victory.png)
 *Celebration screen when player wins*
 
 ## Future Enhancements
