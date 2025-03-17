@@ -134,6 +134,7 @@ export default function GameSetup({ onSetupComplete }) {
         <p>- After 11, you may "hold" or continue drawing</p>
         <p>- Closest to 17 without exceeding wins</p>
         <p>- Exactly 17 is an instant win</p>
+        <p>- A=1, J=11, Q=12, K=13</p>
       </div>
       <footer className="footer">
         <p>&copy; Designed and created by <a href="https://pradipbade.com" target="_blank" rel="noopener noreferrer">Pradip Bade</a></p>
