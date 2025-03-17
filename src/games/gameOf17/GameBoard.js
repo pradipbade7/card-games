@@ -251,13 +251,13 @@ export default function GameBoard({ gameState, onDrawCard, onHold, onReset, onRe
         return (
             <div className="loading-screen">
                 <div className="loading-spinner"></div>
-                <p>Loading game sounds...</p>
-                <button
+                <p>Loading game...</p>
+                {/* <button
                     className="skip-loading-btn"
                     onClick={() => setSoundsLoading(false)}
                 >
                     Skip Loading
-                </button>
+                </button> */}
             </div>
         );
     }
